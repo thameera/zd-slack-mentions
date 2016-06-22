@@ -9,8 +9,9 @@ const imOpenEndpoint = 'im.open';
 const chatPostEndpoint = 'chat.postMessage';
 let token;
 
+/* Call the given endpoing in Slack API */
 const callAPI = (endpoint, form, cb) => {
-  request.post(baseURL + endpoint, { form }, (err, res, body) => {
+  request.post(baseURL + endpoint, {form}, (err, res, body) => {
     if (err) return cb(err);
 
     body = JSON.parse(body);
@@ -20,6 +21,7 @@ const callAPI = (endpoint, form, cb) => {
   });
 };
 
+/* Find Slack ID of the user with given username */
 const findUser = (username, cb) => {
   callAPI(usersListEndpoint, {token}, (err, body) => {
     if (err) return cb(err);
@@ -31,6 +33,7 @@ const findUser = (username, cb) => {
   });
 };
 
+/* Open a direct msg channel with given Slack user id */
 const openIM = (user, cb) => {
   callAPI(imOpenEndpoint, {token, user}, (err, body) => {
     if (err) return cb(err);
@@ -38,6 +41,7 @@ const openIM = (user, cb) => {
   });
 };
 
+/* Post message to specified Slack channel */
 const postMsg = (channel, data, cb) => {
   const obj = {
     title: `#${data.id} | ${data.title}`,
@@ -59,6 +63,7 @@ const postMsg = (channel, data, cb) => {
   });
 };
 
+/* Extract mentioned user's name from comment */
 const extractName = (comment) => {
   const start = comment.indexOf('<@') + 2;
   const end = comment.substr(start).indexOf('>');
@@ -67,6 +72,7 @@ const extractName = (comment) => {
 
 module.exports = (context, cb) => {
 
+  // Slack bot token
   token = context.data.BOT_TOKEN;
 
   const name = extractName(context.data.comment);
