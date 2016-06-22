@@ -55,6 +55,9 @@ const postMsg = (channel, data, cb) => {
   callAPI(chatPostEndpoint, {
     token,
     channel,
+    as_user: false,
+    username: 'Zendesk Mentions Bot',
+    icon_url: 'http://i.imgur.com/IhN4IzR.png?1',
     text: 'You were mentioned in this ticket:',
     attachments: JSON.stringify([obj])
   }, (err, body) => {
