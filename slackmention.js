@@ -26,7 +26,7 @@ const findUser = (username, cb) => {
   callAPI(usersListEndpoint, {token}, (err, body) => {
     if (err) return cb(err);
 
-    const user = _.find(body.members, {name: username.toLowerCase()});
+    const user = _.find(body.members, {name: username});
 
     if (!user) return cb(`User ${username} not found`);
     cb(null, user.id);
@@ -78,12 +78,12 @@ module.exports = (context, cb) => {
   // Slack bot token
   token = context.data.BOT_TOKEN;
 
-  const name = extractName(context.data.comment);
+  const name = extractName(context.data.comment).toLowerCase();
 
   findUser(name, (err, id) => {
     if (err) {
       // If no such user, assume it's a channel
-      return postMsg(name.toLowerCase(), context.data, cb);
+      return postMsg(name, context.data, cb);
     }
 
     return openIM(id, (err, channelId) => {
