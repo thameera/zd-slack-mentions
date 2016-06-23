@@ -61,7 +61,7 @@ const postMsg = (channel, data, cb) => {
     text: 'You were mentioned in this ticket:',
     attachments: JSON.stringify([obj])
   }, (err, body) => {
-    if (err) return cb(err);
+    if (err) { console.log(err); return cb(err); }
     cb(null);
   });
 };
@@ -81,8 +81,12 @@ module.exports = (context, cb) => {
   const name = extractName(context.data.comment);
 
   findUser(name, (err, id) => {
-    if (err) { console.log(err); return cb(); }
-    else openIM(id, (err, channelId) => {
+    if (err) {
+      // If no such user, assume it's a channel
+      return postMsg(name.toLowerCase(), context.data, cb);
+    }
+
+    return openIM(id, (err, channelId) => {
       if (err) { console.log(err); return cb(); }
       else postMsg(channelId, context.data, cb);
     });
