@@ -1,7 +1,6 @@
 'use latest';
 
 const request = require('request');
-const _ = require('lodash@4.8.2');
 
 const baseURL = 'https://slack.com/api/';
 const usersListEndpoint = 'users.list';
@@ -21,12 +20,19 @@ const callAPI = (endpoint, form, cb) => {
   });
 };
 
+const getUserByName = (users, name) => {
+  let res = users.filter(u => u.name.toLowerCase() === name);
+  if (!res.length) res = users.filter(u => u.profile.display_name.toLowerCase() === name);
+  if (!res.length) res = users.filter(u => u.profile.real_name.toLowerCase() === name);
+  return res.length ? res[0] : null;
+};
+
 /* Find Slack ID of the user with given username */
 const findUser = (username, cb) => {
   callAPI(usersListEndpoint, {token}, (err, body) => {
     if (err) return cb(err);
 
-    const user = _.find(body.members, {name: username});
+    const user = getUserByName(body.members, username);
 
     if (!user) return cb(`User ${username} not found`);
     cb(null, user.id);

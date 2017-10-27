@@ -1,6 +1,6 @@
 # Zendesk Mentions to Slack bot
 
-This webtask checks for user/channel mentions in Zendesk and DMs the relevant Slack user or channel with ticket info. The webtask is triggered by Zendesk when a mention is detected in a comment. The format of the mention should be `<@username>` or `<@channelname>`.
+This webtask checks for user/channel mentions in Zendesk and DMs the relevant Slack user or channel with ticket info. The webtask is triggered by Zendesk when a mention is detected in a comment. The format of the mention should be `<@username>`, `<@Real Name>` or `<@channelname>`.
 
 ## How to setup the webtask
 
@@ -18,3 +18,7 @@ This webtask checks for user/channel mentions in Zendesk and DMs the relevant Sl
       "author": "{{ticket.latest_comment.author.name}}",
       "tags": "{{ticket.tags}}"
     }
+
+## Development
+
+    wt update --watch slackmention slackmention.js
