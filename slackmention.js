@@ -76,6 +76,7 @@ const postMsg = (channel, data, cb) => {
 const extractName = (comment) => {
   const start = comment.indexOf('<@') + 2;
   const end = comment.substr(start).indexOf('>');
+  console.log(comment.substr(start, end));
   return comment.substr(start, end);
 };
 
@@ -84,17 +85,17 @@ module.exports = (context, cb) => {
   // Slack bot token
   token = context.data.BOT_TOKEN;
 
-  const name = extractName(context.data.comment).toLowerCase();
+  const name = extractName(context.body.comment).toLowerCase();
 
   findUser(name, (err, id) => {
     if (err) {
       // If no such user, assume it's a channel
-      return postMsg(name, context.data, cb);
+      return postMsg(name, context.body, cb);
     }
 
-    return openIM(id, (err, channelId) => {
-      if (err) { console.log(err); return cb(); }
-      else postMsg(channelId, context.data, cb);
+    return openIM(id, (err2, channelId) => {
+      if (err) { console.log(err2); return cb(); }
+      postMsg(channelId, context.body, cb);
     });
   });
 
